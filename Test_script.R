@@ -59,4 +59,5 @@ tdm.stack.nl <- tdm.stack[, !colnames(tdm.stack) %in% "targetPFA"]
 
 knn.pred <- knn(tdm.stack.nl[train.idx, -686], tdm.stack.nl[test.idx, -686], tdm.pfa[train.idx])
 
+##
 # accuracy

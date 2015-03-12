@@ -7,7 +7,7 @@ options(stringsAsFactors = FALSE)
 
 #Set parameters
 pfa_label <- c("disparities","dissemination", "methods","options", "systems") # where each fileid == category label
-pathname <-  "C:\\Users\\sergan\\Documents\\AMIA_CURRENT\\pcori_separate_files" #enter path of abstracts
+pathname <-  "C:\\Users\\sergan\\Documents\\barepcori" #enter path of abstracts
 
 # clean text-scrub out nasty html
 
@@ -57,7 +57,8 @@ test.idx <- (1:nrow(tdm.stack)) [- train.idx]
 tdm.pfa <- tdm.stack[, "targetpfa"]
 tdm.stack.nl <- tdm.stack[, !colnames(tdm.stack) %in% "targetPFA"]
 
-knn.pred <- knn(tdm.stack.nl[train.idx, -686], tdm.stack.nl[test.idx, -686], tdm.pfa[train.idx])
+dropme <- which(sapply(tdm.stack.nl,is.character))
+knn.pred <- knn(tdm.stack.nl[train.idx, -dropme], tdm.stack.nl[test.idx, -dropme], tdm.pfa[train.idx])
 
 ##
 # accuracy

@@ -6,8 +6,7 @@ lapply(libs, require, character.only = TRUE)
 options(stringsAsFactors = FALSE)
 
 #Set parameters
-pfa_label <- c("disparities","dissemination", "methods","options", "systems") # where each fileid == category label
-pathname <-  "C:\\Users\\sergan\\Documents\\barepcori" #enter path of abstracts
+source("localsettings.R")
 
 # clean text-scrub out nasty html
 

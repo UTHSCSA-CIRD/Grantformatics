@@ -7,7 +7,7 @@ options(stringsAsFactors = FALSE)
 
 #Set parameters
 pfa_label <- c("disparities","dissemination", "methods","options", "systems") # where each fileid == category label
-pathname <-  "C:\\Users\\sergan\\Documents\\barepcori" #enter path of abstracts
+pathname <-  "C:\\Users\\sergan\\Documents\\AMIA_CURRENT\\pcori_separate_files" #enter path of abstracts
 
 # clean text-scrub out nasty html
 
@@ -19,7 +19,7 @@ cleanCorpus <- function(corpus) {
   return(corpus.tmp)
 }
 
-# build TermDocumentMatrix: text2quantative
+# build TermDocumentMatrix(where the magic happens)text2quantative
 
 generateTDM <- function(pfa, path) {
   s.dir <- sprintf("%s/%s", path, pfa)
@@ -39,7 +39,7 @@ bindPFAtoTDM <- function(tdm) {
   s.df <- as.data.frame(s.mat, stringsAsFactors = FALSE)
   
   s.df <- cbind(s.df, rep(tdm[["name"]], nrow(s.df)))
-  colnames(s.df)[ncol(s.df)] <- "targetPFA"
+  colnames(s.df)[ncol(s.df)] <- "targetpfa"
   return(s.df)
 }
 
@@ -50,17 +50,14 @@ tdm.stack <- do.call(rbind.fill, pfaTDM)
 tdm.stack[is.na(tdm.stack)] <- 0
 
 # hold-out(trainer)-portion of abstracts to teach subsets,dont tell it which one it was awarded compare to actual award
-train.idx <- sample(nrow(tdm.stack), ceiling(nrow(tdm.stack) * 0.5))
+train.idx <- sample(nrow(tdm.stack), ceiling(nrow(tdm.stack) * 0.7))
 test.idx <- (1:nrow(tdm.stack)) [- train.idx]
 
 # model - PFA
 tdm.pfa <- tdm.stack[, "targetpfa"]
 tdm.stack.nl <- tdm.stack[, !colnames(tdm.stack) %in% "targetPFA"]
 
-knn.pred <- knn(tdm.stack.nl[train.idx, ], tdm.stack.nl[test.idx, ], tdm.pfa[train.idx])
+knn.pred <- knn(tdm.stack.nl[train.idx, -686], tdm.stack.nl[test.idx, -686], tdm.pfa[train.idx])
 
+##
 # accuracy
-
-conf.mat <- table("Predictions"= knn.pred, Actual = tdm.pfa[test.idx])
-(accuracy <- sum(diag(conf.mat)) / length(test.idx) * 100)
-

@@ -1,6 +1,6 @@
 # init libraries etc
-libs <-c("tm", "plyr", "class")
-lapply(libs, require, character.only = TRUE)
+libs <-c("RTextTools","plyr", "class", "tm");
+lapply(libs, require, character.only = TRUE);
 
 #Set options
 options(stringsAsFactors = FALSE)
@@ -49,3 +49,5 @@ dm <- DocumentTermMatrix(corpus,control=list(removeNumbers=T));
 # Told you the lc variable (length of the corpus, i.e. number of documents) 
 # would come in handy. And no, not a virgin, not yet. Wait, what?
 dc <- create_container(dm,meta(corpus,"pfa")[,1],trainSize = 1:round(lc/2),virgin=F);
+
+trained <- train_models(dc,c("SVM","GLMNET","MAXENT"));
